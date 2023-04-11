@@ -51,3 +51,4 @@ class HourlyCard extends StatelessWidget {
     });
   }
 }
+
