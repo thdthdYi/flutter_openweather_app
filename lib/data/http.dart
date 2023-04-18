@@ -5,7 +5,7 @@ import 'dart:convert';
 
 import '../data/controller.dart';
 
-const apiKey = '';
+const apiKey = 'b05bacb845e2db9ffe330721e09c7d02';
 
 late String lat;
 late String lon;

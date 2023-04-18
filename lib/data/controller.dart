@@ -5,6 +5,7 @@ import 'package:flutter_hourweather_app/model/weather_data.dart';
 import 'package:get/get.dart';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Controller extends GetxController {
   static Controller get to => Get.find<Controller>();
@@ -25,9 +26,12 @@ class Controller extends GetxController {
   @override
   void onInit() async {
     //권한 체크
-    LocationPermission permission;
-    permission = await Geolocator.checkPermission();
 
+    await locationPermission();
+
+    //permission = await Geolocator.checkPermission();
+
+/*
     print(permission);
     if (permission == LocationPermission.whileInUse) {
       await getLocation();
@@ -40,8 +44,7 @@ class Controller extends GetxController {
         await fetchData();
       } else {
         print('failed');
-      }
-    }
+      }*/
   }
 
   //to allow current location in first screen
@@ -104,6 +107,25 @@ class Controller extends GetxController {
       if (int.parse('${todayList[i].substring(2, 4)}') < DateTime.now().hour ==
           true) {
         today.add(todayList[i].substring(4));
+      }
+    }
+  }
+
+  Future<void> locationPermission() async {
+    Map<Permission, PermissionStatus> status =
+        await [Permission.location].request();
+
+    if (status[Permission.location] == PermissionStatus.granted) {
+      await getLocation();
+      await fetchData();
+    } else if (status[Permission.location] == PermissionStatus.denied) {
+      await locationPermission();
+
+      if (status[Permission.location] == PermissionStatus.granted) {
+        await getLocation();
+        await fetchData();
+      } else {
+        print('failed');
       }
     }
   }
